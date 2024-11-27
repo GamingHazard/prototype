@@ -15,43 +15,53 @@ export const AuthProvider = ({ children }) => {
   const [UserID, setUserID] = useState(null);
   const [deleteModal, setdeleteModal] = useState(false);
 
-  // User Regiestration
+  // Helper function to handle async storage loading and saving
+  const loadFromStorage = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      console.error("Error loading from storage:", error);
+      return null;
+    }
+  };
+
+  const saveToStorage = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error("Error saving to storage:", error);
+    }
+  };
+
+  // User Registration
   const register = async (name, email, phone, password) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
         "https://uga-cycle-backend-1.onrender.com/register",
-        {
-          name,
-          email,
-          phone,
-          password,
-        }
+        { name, email, phone, password }
       );
 
-      let UserInfo = response.data;
-
-      if (response.status === 201 || response.status === 200) {
-        const { token, id } = UserInfo.user;
+      if (response.status === 200 || response.status === 201) {
+        const { token, id } = response.data.user;
         if (token && id) {
-          setUserInfo(UserInfo);
+          setUserInfo(response.data);
           setUserToken(token);
           setUserID(id);
 
-          await AsyncStorage.setItem("userInfo", JSON.stringify(UserInfo));
-          await AsyncStorage.setItem("userToken", token);
-          await AsyncStorage.setItem("userId", id);
+          await saveToStorage("userInfo", response.data);
+          await saveToStorage("userToken", token);
+          await saveToStorage("userId", id);
         } else {
-          console.log("Token or ID missing in response.");
+          Alert.alert("Error", "Token or ID missing in response.");
         }
       } else {
-        console.log("Registration failed:", response.data.message);
+        Alert.alert("Error", response.data.message || "Registration failed.");
       }
     } catch (error) {
-      console.error(
-        "Error registering user:",
-        error.response?.data?.message || error.message
-      );
+      console.error("Error registering user:", error);
+      Alert.alert("Error", error.message || "Registration failed.");
     } finally {
       setIsLoading(false);
     }
@@ -62,92 +72,70 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         "https://uga-cycle-backend-1.onrender.com/login",
-        {
-          identifier,
-          password,
-        }
+        { identifier, password }
       );
 
-      let UserInfo = response.data;
+      const { token, user } = response.data;
+      setUserInfo(response.data);
+      setUserToken(token);
+      setUserID(user.id);
 
-      setUserInfo(UserInfo);
-      setUserToken(UserInfo.token);
-      setUserID(UserInfo.user.id);
-
-      await AsyncStorage.setItem("userInfo", JSON.stringify(UserInfo));
-      await AsyncStorage.setItem("userToken", UserInfo.token);
-      AsyncStorage.setItem("userId", UserInfo.user.id);
-
-      return UserInfo;
+      await saveToStorage("userInfo", response.data);
+      await saveToStorage("userToken", token);
+      await saveToStorage("userId", user.id);
+      return response.data;
     } catch (error) {
-      throw error;
+      throw new Error(error.response?.data?.message || error.message);
     }
   };
 
   // User Logout
-  const logout = () => {
+  const logout = async () => {
     setIsLoading(true);
     setUserToken(null);
     setUserInfo(null);
     setUserID(null);
-    AsyncStorage.removeItem("userInfo");
-    AsyncStorage.removeItem("userToken");
-    AsyncStorage.removeItem("userId");
-    AsyncStorage.removeItem("userImage");
+    await AsyncStorage.clear();
     setIsLoading(false);
   };
 
+  // Check if user is logged in
   const isLoggedIn = async () => {
-    try {
-      setIsLoading(true);
-      let userInfo = await AsyncStorage.getItem("userInfo");
-      let userToken = await AsyncStorage.getItem("userToken");
-      userInfo = JSON.parse(userInfo);
-      if (userInfo) {
-        setUserToken(userToken);
-        setUserInfo(userInfo);
-        setUserID(userInfo.user.id);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+    setIsLoading(true);
+    const userInfo = await loadFromStorage("userInfo");
+    const userToken = await loadFromStorage("userToken");
+
+    if (userInfo && userToken) {
+      setUserInfo(userInfo);
+      setUserToken(userToken);
+      setUserID(userInfo.user.id);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     isLoggedIn();
   }, []);
 
-  const ShowEditPage = () => {
-    setMainModal(true);
-  };
+  // Profile Edit Modal Toggle
+  const ShowEditPage = () => setMainModal(true);
+  const HideEditPage = () => setMainModal(false);
 
-  const HideEditPage = async () => {
-    setMainModal(false);
-  };
+  // Delete Confirmation Modal Toggle
+  const ShowDeleteModal = () => setdeleteModal(true);
+  const HideDeleteModal = () => setdeleteModal(false);
 
-  const ShowDeleteModal = () => {
-    setdeleteModal(true);
-  };
-
-  const HideDeleteModal = () => {
-    setdeleteModal(false);
-  };
-
+  // Image Picker Logic
   const uploadImage = async (mode) => {
     try {
       let result = {};
 
-      // Check permissions and launch appropriate picker
+      // Check permissions and pick image
       if (mode === "gallery") {
         const permissionResult =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
-          Alert.alert(
-            "Permission Required",
-            "Permission to access gallery is required!"
-          );
+          Alert.alert("Permission Required", "Gallery permission is required.");
           return;
         }
         result = await ImagePicker.launchImageLibraryAsync({
@@ -160,10 +148,7 @@ export const AuthProvider = ({ children }) => {
         const permissionResult =
           await ImagePicker.requestCameraPermissionsAsync();
         if (!permissionResult.granted) {
-          Alert.alert(
-            "Permission Required",
-            "Permission to access camera is required!"
-          );
+          Alert.alert("Permission Required", "Camera permission is required.");
           return;
         }
         result = await ImagePicker.launchCameraAsync({
@@ -174,21 +159,17 @@ export const AuthProvider = ({ children }) => {
         });
       }
 
-      // If an image is selected, display it and then start the upload process
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const imageUri = result.assets[0].uri;
-
-        // Step 1: Display the selected image immediately
         setSelectedImage(imageUri);
-
-        // Step 2: Upload the image to Cloudinary in the background
-        uploadImageToCloudinary(imageUri);
+        await uploadImageToCloudinary(imageUri);
       }
     } catch (error) {
       console.log("Error selecting image: ", error);
     }
   };
 
+  // Upload Image to Cloudinary
   const uploadImageToCloudinary = async (imageUri) => {
     const CLOUDINARY_URL =
       "https://api.cloudinary.com/v1_1/ghost150/image/upload";
@@ -197,8 +178,8 @@ export const AuthProvider = ({ children }) => {
     const formData = new FormData();
     formData.append("file", {
       uri: imageUri,
-      type: "image/jpeg", // Or use the correct MIME type of the image
-      name: "profilePicture.jpg", // Adjust the name if needed
+      type: "image/jpeg",
+      name: "profilePicture.jpg",
     });
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
@@ -210,10 +191,7 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
       if (response.ok) {
-        const cloudinaryUrl = data.secure_url;
-
-        // Save the image URL and update the backend
-        await saveImageToStorage(cloudinaryUrl);
+        await saveImageToStorage(data.secure_url);
       } else {
         throw new Error("Error uploading image to Cloudinary");
       }
@@ -222,21 +200,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Save image URL to AsyncStorage and update backend
   const saveImageToStorage = async (imageUrl) => {
     try {
-      // Save to AsyncStorage
-      await AsyncStorage.setItem("userImage", imageUrl);
-
-      // Update user's profile picture in the backend
+      await saveToStorage("userImage", imageUrl);
       await updateProfilePicture(imageUrl);
-
-      // Optionally update UI with the Cloudinary URL if needed
-      setSelectedImage(imageUrl);
     } catch (error) {
       console.log("Error saving image:", error);
     }
   };
 
+  // Update Profile Picture in Backend
   const updateProfilePicture = async (profilePictureUrl) => {
     try {
       const response = await axios.patch(
@@ -244,26 +218,22 @@ export const AuthProvider = ({ children }) => {
         { profilePicture: profilePictureUrl },
         { headers: { "Content-Type": "application/json" } }
       );
-      const updatedUser = response.data.user;
+
       if (response.status === 200) {
-        // Update local storage and state with latest user info, token, and ID
-        await AsyncStorage.setItem("userInfo", JSON.stringify(response.data));
-        await AsyncStorage.setItem("userId", updatedUser._id);
-        await AsyncStorage.setItem("userToken", updatedUser.verificationToken);
-
         setUserInfo(response.data);
-        setUserID(updatedUser._id);
-        setUserToken(updatedUser.verificationToken);
-
-        console.log("Profile picture updated successfully:", response.data);
-      } else {
-        console.log("Error updating profile picture:", response.data.error);
+        setUserToken(response.data.verificationToken);
+        setUserID(response.data.user._id);
+        await saveToStorage("userInfo", response.data);
+        await saveToStorage("userToken", response.data.verificationToken);
+        await saveToStorage("userId", response.data.user._id);
+        setSelectedImage(profilePictureUrl);
       }
     } catch (error) {
-      console.error("Error updating profile picture:", error);
+      console.log("Error updating profile picture:", error);
     }
   };
 
+  // Remove Profile Picture
   const removeImage = async () => {
     try {
       const response = await axios.patch(
@@ -271,142 +241,64 @@ export const AuthProvider = ({ children }) => {
         { profilePicture: "" },
         { headers: { "Content-Type": "application/json" } }
       );
-      const updatedUser = response.data.user;
 
       if (response.status === 200) {
         setSelectedImage(null);
         await AsyncStorage.removeItem("userImage");
-
-        // Update local storage and state with latest user info, token, and ID
-        await AsyncStorage.setItem("userInfo", JSON.stringify(response.data));
-        await AsyncStorage.setItem("userId", updatedUser._id);
-        await AsyncStorage.setItem("userToken", updatedUser.verificationToken);
-
         setUserInfo(response.data);
-        setUserID(updatedUser._id);
-        setUserToken(updatedUser.verificationToken);
-
-        console.log("Profile picture updated successfully:", response.data);
-
-        console.log("Profile picture removed  successfully:", response.data);
-      } else {
-        console.log("Error updating profile picture:", response.data.error);
+        setUserToken(response.data.verificationToken);
+        setUserID(response.data.user._id);
+        await saveToStorage("userInfo", response.data);
+        await saveToStorage("userToken", response.data.verificationToken);
+        await saveToStorage("userId", response.data.user._id);
       }
     } catch (error) {
       console.log("Error removing image: ", error);
     }
   };
 
-  React.useEffect(() => {
-    const loadImageFromStorage = async () => {
-      try {
-        const imageUri = await AsyncStorage.getItem("userImage");
-        if (imageUri) {
-          setSelectedImage(imageUri);
-        }
-      } catch (error) {
-        console.log("Error loading image: ", error);
-      }
-    };
-
-    loadImageFromStorage();
-  }, []);
-
-  // Updating user's profile
-
-  // Updating user profile
+  // Update User Profile
   const updateUserProfile = async (name, email, phone, imageUri) => {
     try {
-      if (!UserToken || !UserID) {
-        throw new Error("UserToken or UserID is missing.");
-      }
-
-      const updateData = {};
-      if (name) updateData.name = name;
-      if (email) updateData.email = email;
-      if (phone) updateData.phone = phone;
-
-      // Upload image to Cloudinary if imageUri is provided
+      const updateData = { name, email, phone };
       if (imageUri) {
         const imageUrl = await uploadImageToCloudinary(imageUri);
         updateData.profilePicture = imageUrl;
       }
 
-      // Send PATCH request to update the user profile
-      const updateResponse = await axios.patch(
+      const response = await axios.patch(
         `https://uga-cycle-backend-1.onrender.com/updateUser/${UserID}`,
         updateData,
-        {
-          headers: {
-            Authorization: `Bearer ${UserToken}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${UserToken}` } }
       );
 
-      if (updateResponse.status === 200) {
-        const updatedUser = updateResponse.data.user;
-
-        // Display success message from the backend, if available
-        Alert.alert(
-          "Success",
-          updateResponse.data.message || "Profile updated successfully."
-        );
-
-        // Update local storage and state with the latest user info, token, and ID
-        await AsyncStorage.setItem(
-          "userInfo",
-          JSON.stringify(updateResponse.data)
-        );
-        await AsyncStorage.setItem("userId", updatedUser._id);
-        await AsyncStorage.setItem("userToken", updatedUser.verificationToken);
-
-        setUserInfo(updateResponse.data);
-        setUserID(updatedUser._id);
-        setUserToken(updatedUser.verificationToken); // If token needs updating, update it here
-      } else {
-        // Display error message from the backend, if available
-        Alert.alert(
-          "Error",
-          updateResponse.data.message || "Failed to update profile."
-        );
+      if (response.status === 200) {
+        await saveToStorage("userInfo", response.data);
+        setUserInfo(response.data);
+        setUserID(response.data.user._id);
+        setUserToken(response.data.verificationToken);
+        Alert.alert("Success", "Profile updated successfully.");
       }
     } catch (error) {
-      // Extract the detailed error message
-      const errorMessage =
-        error.response?.data || error.message || "An error occurred.";
-
-      // Display the extracted error message in an alert
-      Alert.alert(
-        "Error",
-        typeof errorMessage === "string"
-          ? errorMessage
-          : JSON.stringify(errorMessage)
-      );
-
-      // Log the error message to the console for debugging
-      console.error(errorMessage);
+      console.error("Error updating user profile:", error);
+      Alert.alert("Error", error.response?.data?.message || error.message);
     }
   };
 
+  // Delete User Account
   const deleteUserAccount = async () => {
     try {
-      const deleteResponse = await axios.delete(
+      const response = await axios.delete(
         `https://uga-cycle-backend-1.onrender.com/deleteUser/${UserID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${UserToken}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${UserToken}` } }
       );
 
-      if (deleteResponse.status === 200) {
+      if (response.status === 200) {
         logout();
+        Alert.alert("Success", "Account deleted successfully.");
       }
     } catch (error) {
-      console.log(
-        "Error deleting user account:",
-        error.response ? error.response.data : error.message
-      );
+      console.log("Error deleting user account:", error);
     }
   };
 

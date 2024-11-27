@@ -9,7 +9,6 @@ const App = () => {
     <AuthProvider>
       <View style={styles.container}>
         <StatusBar hidden={true} />
-
         <Nav />
       </View>
     </AuthProvider>

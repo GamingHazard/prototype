@@ -76,7 +76,7 @@ const SettingsScreen = ({ navigation }) => {
           <FontAwesome name="angle-right" size={24} color="lightgrey" />
         </TouchableOpacity>
         <View style={styles.line} />
-        <TouchableOpacity style={styles.btns} >
+        <TouchableOpacity style={styles.btns}>
           {/* <FontAwesome name="user" size={24} color="lightgrey" /> */}
           <FontAwesome name="exclamation-circle" size={24} color="lightgrey" />
 

@@ -11,7 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#3b6d3b"
     },
-
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -24,10 +23,18 @@
         "backgroundColor": "#3b6d3b"
       },
       "package": "com.gost150.ugacycle",
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b3f678f6-0a4c-4c8d-b6c6-12b112b5657c"
+      }
     }
   }
 }
