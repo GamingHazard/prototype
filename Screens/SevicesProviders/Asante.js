@@ -92,9 +92,9 @@ const Asante = () => {
     fetchStatus();
     loadStoredData();
 
-    // const interval = setInterval(() => {
-    //   fetchStatus();
-    // }, 10000);
+    const interval = setInterval(() => {
+      fetchStatus();
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -146,7 +146,7 @@ const Asante = () => {
     }
 
     setLoading(true);
-    let company = "Asante";
+    let company = "Asante Waste Management";
     const formData = {
       company: company.trim(),
       district: district.trim(),

@@ -92,9 +92,9 @@ const Swift = () => {
     fetchStatus();
     loadStoredData();
 
-    // const interval = setInterval(() => {
-    //   fetchStatus();
-    // }, 10000);
+    const interval = setInterval(() => {
+      fetchStatus();
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
