@@ -31,6 +31,7 @@ import YoWaste from "../Screens/SevicesProviders/YoWaste";
 import SaleScreen from "../Screens/SaleScreen";
 import TrashReminder from "../Screens/GarbageScheduleScreen";
 import Tips from "../Screens/TipsScreen";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -60,18 +61,20 @@ function MainTabNavigator() {
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Settings") {
-            iconName = focused ? "settings" : "settings-outline";
+            iconName = focused ? "account-wrench" : "account-wrench-outline";
           } else if (route.name === "Services") {
-            iconName = focused ? "trash" : "trash-outline";
-          } else if (route.name === "Notifications") {
-            iconName = focused ? "mail" : "mail-outline";
+            iconName = focused ? "dump-truck" : "dump-truck";
           } else if (route.name === "Community") {
-            iconName = focused ? "people" : "people-outline";
+            iconName = focused ? "account-group" : "account-group-outline";
           }
 
           return (
             <View>
-              <Ionicons name={iconName} size={size} color={color} />
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={color}
+              />
             </View>
           );
         },
@@ -83,7 +86,6 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Community" component={CommunityScreen} />
       <Tab.Screen name="Services" component={ServiceScreen} />
-      {/* <Tab.Screen name="Notifications" component={NotificationsScreen} /> */}
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
