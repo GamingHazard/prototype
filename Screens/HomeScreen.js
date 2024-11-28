@@ -207,7 +207,7 @@ const HomeScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>
 
-        <Text style={styles.newsTitle}>News Updates</Text>
+        <Text style={styles.newsTitle}>Breaking News</Text>
         <NewsComponent />
       </ScrollView>
     </View>

@@ -65,7 +65,7 @@ const DeWaste = () => {
       try {
         const storedData = await AsyncStorage.getItem("DeWasteformData");
         const storedLocationEnabled = await AsyncStorage.getItem(
-          "isLocationEnabled"
+          "DeWasteisLocationEnabled"
         );
 
         if (storedData) {
@@ -73,11 +73,10 @@ const DeWaste = () => {
           setFullName(parsedData.fullName || "");
           setEmail(parsedData.email || "");
           setPhoneNumber(parsedData.phoneNumber || "");
-          setServiceType(parsedData.serviceType || "");
-          setServiceType(parsedData.wasteType || "");
+          setServiceType(parsedData.serviceType || null);
+          setWasteType(parsedData.wasteType || null);
           setRegistrationType(parsedData.registrationType || null);
           setPickupSchedule(parsedData.pickupSchedule || null);
-          setWasteType(parsedData.pickupSchedule || null);
           setRegion(parsedData.region || null);
           setDistrict(parsedData.district || null);
           setDistrictOptions(regionDistricts[parsedData.region] || []);
@@ -102,7 +101,10 @@ const DeWaste = () => {
   // Handle checkbox toggle
   const toggleLocation = async (value) => {
     setIsLocationEnabled(value); // Update the state
-    await AsyncStorage.setItem("isLocationEnabled", JSON.stringify(value)); // Persist state
+    await AsyncStorage.setItem(
+      "DeWasteisLocationEnabled",
+      JSON.stringify(value)
+    ); // Persist state
 
     if (value) {
       // Get the user's location
@@ -235,6 +237,7 @@ const DeWaste = () => {
         setSubmissionId(null);
 
         await AsyncStorage.removeItem("DeWasteformData");
+        await AsyncStorage.removeItem("DeWasteisLocationEnabled");
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }

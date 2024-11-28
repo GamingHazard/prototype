@@ -26,7 +26,7 @@ const Best = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [serviceType, setServiceType] = useState("");
+  const [serviceType, setServiceType] = useState(null);
   const [registrationType, setRegistrationType] = useState(null);
   const [pickupSchedule, setPickupSchedule] = useState(null);
   const [wasteType, setWasteType] = useState(null);
@@ -65,7 +65,7 @@ const Best = () => {
       try {
         const storedData = await AsyncStorage.getItem("BestformData");
         const storedLocationEnabled = await AsyncStorage.getItem(
-          "isLocationEnabled"
+          "BestisLocationEnabled"
         );
 
         if (storedData) {
@@ -73,11 +73,10 @@ const Best = () => {
           setFullName(parsedData.fullName || "");
           setEmail(parsedData.email || "");
           setPhoneNumber(parsedData.phoneNumber || "");
-          setServiceType(parsedData.serviceType || "");
-          setServiceType(parsedData.wasteType || "");
+          setServiceType(parsedData.serviceType || null);
+          setWasteType(parsedData.wasteType || null);
           setRegistrationType(parsedData.registrationType || null);
           setPickupSchedule(parsedData.pickupSchedule || null);
-          setWasteType(parsedData.pickupSchedule || null);
           setRegion(parsedData.region || null);
           setDistrict(parsedData.district || null);
           setDistrictOptions(regionDistricts[parsedData.region] || []);
@@ -102,7 +101,7 @@ const Best = () => {
   // Handle checkbox toggle
   const toggleLocation = async (value) => {
     setIsLocationEnabled(value); // Update the state
-    await AsyncStorage.setItem("isLocationEnabled", JSON.stringify(value)); // Persist state
+    await AsyncStorage.setItem("BestisLocationEnabled", JSON.stringify(value)); // Persist state
 
     if (value) {
       // Get the user's location
@@ -235,6 +234,7 @@ const Best = () => {
         setSubmissionId(null);
 
         await AsyncStorage.removeItem("BestformData");
+        await AsyncStorage.removeItem("BestisLocationEnabled");
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }

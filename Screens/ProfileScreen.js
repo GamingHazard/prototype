@@ -11,14 +11,32 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import ModalView from "../components/Modal";
 import ProfileEditScreen from "./EditProfile";
-import axios from "axios";
+import Fontisto from "@expo/vector-icons/Fontisto";
+import Entypo from "@expo/vector-icons/Entypo";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const ProfileScreen = () => {
-  const { ShowEditPage, HideEditPage, MainModal, SelectedImage, UserInfo } =
-    useContext(AuthContext);
+  const {
+    ShowEditPage,
+    HideEditPage,
+    MainModal,
+    SelectedImage,
+    UserInfo,
+    uploadImage,
+    removeImage,
+  } = useContext(AuthContext);
 
   const [user, setUser] = useState(UserInfo?.user || {});
-  const [error, setError] = useState(null);
+  const [imageUploadModal, setimageUploadModal] = useState(false);
+
+  const ShowImageModal = () => {
+    setimageUploadModal(true);
+  };
+
+  const HideImageModal = () => {
+    setimageUploadModal(false);
+  };
 
   // Update user state when UserInfo changes
   useEffect(() => {
@@ -28,7 +46,7 @@ const ProfileScreen = () => {
   }, [UserInfo]);
 
   const userName = user.name || "Name of User";
-  const userPhone = user.phone ? `+256 ${user.phone}` : "Phone not available";
+  const userPhone = user.phone ? `(+256)-${user.phone}` : "Phone not available";
   const userEmail = user.email || "Email not available";
   const ProfilePicture = user.profilePicture;
 
@@ -42,6 +60,8 @@ const ProfileScreen = () => {
               ProfilePicture
                 ? { uri: ProfilePicture }
                 : {
+                    uri: SelectedImage,
+                  } || {
                     uri: "https://cdn-icons-png.flaticon.com/128/149/149071.png",
                   }
             }
@@ -53,9 +73,70 @@ const ProfileScreen = () => {
               // bottom: 20,
             }}
           />
+          {/* Camera Icon */}
+          <Fontisto
+            onPress={ShowImageModal}
+            name="camera"
+            size={20}
+            color="#3b6d3b"
+            style={{ alignSelf: "flex-end", top: -25 }}
+          />
         </View>
 
         <View style={{ height: 30, width: "100%" }} />
+
+        {/* Edit Profile Modal */}
+        <ModalView
+          content={
+            <View style={styles.modalContent}>
+              <FontAwesome
+                onPress={HideImageModal}
+                style={styles.modalCloseIcon}
+                name="times-circle-o"
+                size={40}
+                color="#3b6d3b"
+              />
+              <View style={styles.modalOptions}>
+                {/* Select image from gallery */}
+                <TouchableOpacity
+                  onPress={() => {
+                    uploadImage("gallery");
+                    setimageUploadModal(false);
+                  }}
+                  style={styles.modalOption}
+                >
+                  <Entypo name="images" size={35} color="#3b6d3b" />
+                  <Text>Gallery</Text>
+                </TouchableOpacity>
+                {/* Select image by camera */}
+                <TouchableOpacity
+                  onPress={() => {
+                    uploadImage("camera");
+                    setimageUploadModal(false);
+                  }}
+                  style={styles.modalOption}
+                >
+                  <AntDesign name="camera" size={35} color="#3b6d3b" />
+                  <Text>Camera</Text>
+                </TouchableOpacity>
+
+                {/* Delete image */}
+                <TouchableOpacity
+                  onPress={() => {
+                    removeImage();
+                    setimageUploadModal(false);
+                  }}
+                  style={styles.modalOption}
+                >
+                  <Entypo name="trash" size={35} color="#3b6d3b" />
+                  <Text>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          }
+          modalVisible={imageUploadModal}
+          modalStyle={styles.imgModal}
+        />
 
         <View style={styles.tabs}>
           <Text style={{ fontSize: 24, fontWeight: "bold", flex: 1 }}>
@@ -70,15 +151,7 @@ const ProfileScreen = () => {
           <Text style={{ fontSize: 24, fontWeight: "bold", flex: 1 }}>
             Email
           </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "monospace",
-              width: "80%",
-              justifyContent: "center",
-              // backgroundColor: "lightgreen",
-            }}
-          >
+          <Text style={{ fontSize: 18, fontFamily: "monospace", width: "80%" }}>
             {userEmail}
           </Text>
         </View>
@@ -121,6 +194,7 @@ const ProfileScreen = () => {
           />
         }
         modalVisible={MainModal}
+        modalStyle={styles.modalStyle}
       />
       {/* account deleting Modal */}
     </View>
@@ -132,6 +206,30 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 15,
     flexDirection: "row",
+  },
+  modalStyle: { height: 410 },
+  modalContent: {
+    width: 370,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+  },
+  modalCloseIcon: {
+    alignSelf: "flex-end",
+  },
+  modalOptions: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 20,
+  },
+  modalOption: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cameraIcon: {
+    backgroundColor: "#f2f5fc",
+
+    borderRadius: 40,
   },
   line: {
     width: "100%",

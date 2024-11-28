@@ -192,10 +192,19 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       if (response.ok) {
         await saveImageToStorage(data.secure_url);
+        await saveImageToStorage();
       } else {
         throw new Error("Error uploading image to Cloudinary");
       }
     } catch (error) {
+      // Alert.alert(error);
+      Alert.alert(
+        "Failed!",
+        error.message +
+          "                                             " +
+          "                                             " +
+          "Please check you internet connection and try again"
+      );
       console.error("Cloudinary upload failed:", error);
     }
   };
@@ -206,6 +215,12 @@ export const AuthProvider = ({ children }) => {
       await saveToStorage("userImage", imageUrl);
       await updateProfilePicture(imageUrl);
     } catch (error) {
+      Alert.alert(
+        "Failed!",
+        error.message +
+          "                                             " +
+          "Please check you internet connection and try again"
+      );
       console.log("Error saving image:", error);
     }
   };
@@ -253,18 +268,21 @@ export const AuthProvider = ({ children }) => {
         await saveToStorage("userId", response.data.user._id);
       }
     } catch (error) {
+      Alert.alert(
+        "Failed!",
+        error.message +
+          "                                             " +
+          "                                             " +
+          "Please check you internet connection and try again"
+      );
       console.log("Error removing image: ", error);
     }
   };
 
   // Update User Profile
-  const updateUserProfile = async (name, email, phone, imageUri) => {
+  const updateUserProfile = async (name, email, phone) => {
     try {
       const updateData = { name, email, phone };
-      if (imageUri) {
-        const imageUrl = await uploadImageToCloudinary(imageUri);
-        updateData.profilePicture = imageUrl;
-      }
 
       const response = await axios.patch(
         `https://uga-cycle-backend-1.onrender.com/updateUser/${UserID}`,
@@ -281,7 +299,13 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error updating user profile:", error);
-      Alert.alert("Error", error.response?.data?.message || error.message);
+      Alert.alert(
+        "Failed!",
+        error.message +
+          "                                             " +
+          "                                             " +
+          "Please check you internet connection and try again"
+      );
     }
   };
 

@@ -53,7 +53,7 @@ const NewsComponent = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
-        <Button title="Retry" onPress={fetchNews} />
+        <Button color={"#3b6d3b"} title="Retry" onPress={fetchNews} />
       </View>
     );
   }
@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: "red",
+    color: "crimson",
+    marginBottom: 10,
   },
 });
 

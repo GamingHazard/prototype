@@ -8,12 +8,12 @@ import {
   View,
   ImageBackground,
 } from "react-native";
-const ModalView = ({ modalVisible, HideModal, content }) => {
+const ModalView = ({ modalVisible, modalStyle, content }) => {
   return (
     <View style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.modalBackground}>
-          <View style={styles.modalView}>{content}</View>
+          <View style={[styles.modalView, modalStyle]}>{content}</View>
         </View>
       </Modal>
     </View>
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background for blur effect
   },
@@ -45,11 +45,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    // height: 410,
   },
 });
 
