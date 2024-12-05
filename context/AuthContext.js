@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [MainModal, setMainModal] = useState(false);
   const [UserID, setUserID] = useState(null);
   const [deleteModal, setdeleteModal] = useState(false);
+  const [UserRole, setUserRole] = useState(null);
 
   // Helper function to handle async storage loading and saving
   const loadFromStorage = async (key) => {
@@ -67,25 +68,63 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // User Login
   const login = async (identifier, password) => {
     try {
+      // Try to login as an Admin first
       const response = await axios.post(
-        "https://uga-cycle-backend-1.onrender.com/login",
+        "https://uga-cycle-backend-1.onrender.com/admin-login",
         { identifier, password }
       );
 
+      // If admin-login is successful, process the response
       const { token, user } = response.data;
       setUserInfo(response.data);
       setUserToken(token);
       setUserID(user.id);
+      setUserRole(user.role);
 
+      // Save to local storage
       await saveToStorage("userInfo", response.data);
       await saveToStorage("userToken", token);
       await saveToStorage("userId", user.id);
-      return response.data;
+
+      return response.data; // Return successful admin login data
     } catch (error) {
-      throw new Error(error.response?.data?.message || error.message);
+      // If admin-login fails, check if it's the admin login error
+      if (
+        error.response &&
+        (error.response.status === 404 || error.response.status === 401)
+      ) {
+        console.log("Admin login failed, trying user login...");
+
+        try {
+          // Attempt the regular user login if admin-login fails
+          const response = await axios.post(
+            "https://uga-cycle-backend-1.onrender.com/login",
+            { identifier, password }
+          );
+
+          // If user-login is successful, process the response
+          const { token, user } = response.data;
+          setUserInfo(response.data);
+          setUserToken(token);
+          setUserID(user.id);
+          setUserRole(user.role);
+
+          // Save to local storage
+          await saveToStorage("userInfo", response.data);
+          await saveToStorage("userToken", token);
+          await saveToStorage("userId", user.id);
+
+          return response.data; // Return successful user login data
+        } catch (error) {
+          // If both login attempts fail
+          throw new Error(error.response?.data?.message || error.message);
+        }
+      } else {
+        // If admin-login failed for some reason other than 401, throw error
+        throw new Error(error.response?.data?.message || error.message);
+      }
     }
   };
 
@@ -349,6 +388,7 @@ export const AuthProvider = ({ children }) => {
         deleteUserAccount,
         UserID,
         updateProfilePicture,
+        UserRole,
       }}
     >
       {children}

@@ -1,17 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
-
-import { AuthProvider } from "./context/AuthContext";
 import Nav from "./components/NavigationComponent";
+import MapboxMap from "./Screens/MapBoxMap";
 
 const App = () => {
   return (
-    <AuthProvider>
-      <View style={styles.container}>
-        <StatusBar hidden={true} />
-        <Nav />
-      </View>
-    </AuthProvider>
+    <View style={styles.container}>
+      <StatusBar hidden={true} />
+      <Nav />
+    </View>
   );
 };
 export default App;

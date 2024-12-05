@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext, AuthProvider } from "../context/AuthContext";
 import { MaterialCommunityIcons } from "../components/Imports";
 import {
   WelcomeScreen,
@@ -32,6 +32,7 @@ import {
   TrashReminder,
   Tips,
 } from "../components/Imports"; // Importing screens from centralized file
+import MapboxMap from "../Screens/MapBoxMap";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -86,33 +87,45 @@ function MainTabNavigator() {
 
 // Root Navigator (combining AuthStack and MainTabNavigator)
 function RootNavigator() {
-  const { UserToken } = useContext(AuthContext);
+  const { UserToken, UserRole } = useContext(AuthContext);
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {UserToken !== null ? (
         <>
-          <Stack.Screen name="Main" component={MainTabNavigator} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-          <Stack.Screen name="Security" component={SecurityScreen} />
-          <Stack.Screen name="Report" component={ReportScreen} />
-          <Stack.Screen name="Privacy" component={PrivacyScreen} />
-          <Stack.Screen name="Support" component={SupportScreen} />
-          <Stack.Screen name="Aquila" component={Aquila} />
-          <Stack.Screen name="Armstrong" component={Armstrong} />
-          <Stack.Screen name="Asante" component={Asante} />
-          <Stack.Screen name="Best" component={Best} />
-          <Stack.Screen name="Bins" component={Bins} />
-          <Stack.Screen name="DeWaste" component={DeWaste} />
-          <Stack.Screen name="Nabugabo" component={Nabugabo} />
-          <Stack.Screen name="Swift" component={Swift} />
-          <Stack.Screen name="YoWaste" component={YoWaste} />
-          <Stack.Screen name="Sale" component={SaleScreen} />
-          <Stack.Screen name="Reminder" component={TrashReminder} />
-          <Stack.Screen name="Tips" component={Tips} />
+          {/* If the user is Admin, show only the Admin Screen */}
+          {UserRole === "Admin" ? (
+            <Stack.Screen name="Map" component={MapboxMap} />
+          ) : (
+            // If the user is not Admin, show the MainTabNavigator
+            <>
+              <Stack.Screen name="Main" component={MainTabNavigator} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen
+                name="ResetPassword"
+                component={ResetPasswordScreen}
+              />
+              <Stack.Screen name="Security" component={SecurityScreen} />
+              <Stack.Screen name="Report" component={ReportScreen} />
+              <Stack.Screen name="Privacy" component={PrivacyScreen} />
+              <Stack.Screen name="Support" component={SupportScreen} />
+              <Stack.Screen name="Aquila" component={Aquila} />
+              <Stack.Screen name="Armstrong" component={Armstrong} />
+              <Stack.Screen name="Asante" component={Asante} />
+              <Stack.Screen name="Best" component={Best} />
+              <Stack.Screen name="Bins" component={Bins} />
+              <Stack.Screen name="DeWaste" component={DeWaste} />
+              <Stack.Screen name="Nabugabo" component={Nabugabo} />
+              <Stack.Screen name="Swift" component={Swift} />
+              <Stack.Screen name="YoWaste" component={YoWaste} />
+              <Stack.Screen name="Sale" component={SaleScreen} />
+              <Stack.Screen name="Reminder" component={TrashReminder} />
+              <Stack.Screen name="Tips" component={Tips} />
+            </>
+          )}
         </>
       ) : (
+        // If the user is not authenticated, show the AuthStack
         <Stack.Screen name="Auth" component={AuthStack} />
       )}
     </Stack.Navigator>
@@ -122,8 +135,10 @@ function RootNavigator() {
 // Main App Component
 export default function Nav() {
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
