@@ -333,6 +333,9 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginBottom: 6,
+    backgroundColor: "whitesmoke",
+    padding: 10,
+    borderRadius: 10,
   },
   itemText: {
     fontSize: 14,

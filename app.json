@@ -22,18 +22,18 @@
         "foregroundImage": "./assets/foreground.png",
         "backgroundColor": "#3b6d3b"
       },
-      "package": "com.gost150.ugacycle",
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
-      ]
+      ],
+      "package": "com.gost150.ugacycle"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "b3f678f6-0a4c-4c8d-b6c6-12b112b5657c"
+        "projectId": "820e94e5-a2e1-475e-b862-5f0b928fa017"
       }
     }
   }

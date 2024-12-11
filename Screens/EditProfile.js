@@ -4,10 +4,9 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  ScrollView,
-  Image,
   TextInput,
   ActivityIndicator,
+  userInfo,
 } from "react-native";
 
 import { AuthContext } from "../context/AuthContext";

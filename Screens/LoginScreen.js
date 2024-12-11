@@ -148,23 +148,6 @@ const LoginScreen = ({ navigation }) => {
             Create an account
           </Text>
         </View>
-
-        {/* <View style={styles.continueWithContainer}>
-          <View style={styles.separator} />
-          <Text style={styles.orContinueText}>Or Continue with</Text>
-          <View style={styles.separator} />
-        </View> */}
-
-        {/* <View style={styles.authButtonsContainer}>
-          <TouchableOpacity style={styles.authButton}>
-            <AntDesign name="apple1" size={24} color="black" />
-            <Text style={styles.authButtonText}>Apple</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.authButton}>
-            <AntDesign name="google" size={24} color="black" />
-            <Text style={styles.authButtonText}>Google</Text>
-          </TouchableOpacity>
-        </View> */}
       </View>
 
       <View

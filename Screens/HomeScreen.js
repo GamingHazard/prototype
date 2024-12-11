@@ -97,6 +97,7 @@ const HomeScreen = ({ navigation }) => {
               fontSize: 18,
               color: "#fbfbda",
               textAlign: "center",
+              flexWrap: "wrap",
             }}
           >
             {userName}

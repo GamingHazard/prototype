@@ -50,7 +50,6 @@ function AuthStack() {
   );
 }
 
-// Tab Navigator for Main Screens with Badge Logic
 function MainTabNavigator() {
   return (
     <Tab.Navigator
@@ -92,38 +91,28 @@ function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {UserToken !== null ? (
-        <>
-          {/* If the user is Admin, show only the Admin Screen */}
-          {UserRole === "Admin" ? (
-            <Stack.Screen name="Map" component={MapboxMap} />
-          ) : (
-            // If the user is not Admin, show the MainTabNavigator
-            <>
-              <Stack.Screen name="Main" component={MainTabNavigator} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen
-                name="ResetPassword"
-                component={ResetPasswordScreen}
-              />
-              <Stack.Screen name="Security" component={SecurityScreen} />
-              <Stack.Screen name="Report" component={ReportScreen} />
-              <Stack.Screen name="Privacy" component={PrivacyScreen} />
-              <Stack.Screen name="Support" component={SupportScreen} />
-              <Stack.Screen name="Aquila" component={Aquila} />
-              <Stack.Screen name="Armstrong" component={Armstrong} />
-              <Stack.Screen name="Asante" component={Asante} />
-              <Stack.Screen name="Best" component={Best} />
-              <Stack.Screen name="Bins" component={Bins} />
-              <Stack.Screen name="DeWaste" component={DeWaste} />
-              <Stack.Screen name="Nabugabo" component={Nabugabo} />
-              <Stack.Screen name="Swift" component={Swift} />
-              <Stack.Screen name="YoWaste" component={YoWaste} />
-              <Stack.Screen name="Sale" component={SaleScreen} />
-              <Stack.Screen name="Reminder" component={TrashReminder} />
-              <Stack.Screen name="Tips" component={Tips} />
-            </>
-          )}
-        </>
+        UserRole === "Admin" ? (
+          <Stack.Screen name="Map" component={MapboxMap} />
+        ) : (
+          // If the user is not Admin, show the MainTabNavigator
+          <>
+            <Stack.Screen name="Main" component={MainTabNavigator} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen
+              name="ResetPassword"
+              component={ResetPasswordScreen}
+            />
+            <Stack.Screen name="Security" component={SecurityScreen} />
+            <Stack.Screen name="Report" component={ReportScreen} />
+            <Stack.Screen name="Privacy" component={PrivacyScreen} />
+            <Stack.Screen name="Support" component={SupportScreen} />
+
+            <Stack.Screen name="Swift" component={Swift} />
+            <Stack.Screen name="Sale" component={SaleScreen} />
+            <Stack.Screen name="Reminder" component={TrashReminder} />
+            <Stack.Screen name="Tips" component={Tips} />
+          </>
+        )
       ) : (
         // If the user is not authenticated, show the AuthStack
         <Stack.Screen name="Auth" component={AuthStack} />

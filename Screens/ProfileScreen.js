@@ -8,13 +8,13 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { AuthContext } from "../context/AuthContext";
 import ModalView from "../components/Modal";
-import ProfileEditScreen from "./EditProfile";
+import ProfileEditScreen from "../Screens/EditProfile";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { AuthContext } from "../context/AuthContext";
 
 const ProfileScreen = () => {
   const {
@@ -60,8 +60,6 @@ const ProfileScreen = () => {
               ProfilePicture
                 ? { uri: ProfilePicture }
                 : {
-                    uri: SelectedImage,
-                  } || {
                     uri: "https://cdn-icons-png.flaticon.com/128/149/149071.png",
                   }
             }
@@ -140,7 +138,7 @@ const ProfileScreen = () => {
 
         <View style={styles.tabs}>
           <Text style={{ fontSize: 24, fontWeight: "bold", flex: 1 }}>
-            Username
+            Name
           </Text>
           <Text style={{ fontSize: 18, fontFamily: "monospace" }}>
             {userName}
@@ -151,7 +149,7 @@ const ProfileScreen = () => {
           <Text style={{ fontSize: 24, fontWeight: "bold", flex: 1 }}>
             Email
           </Text>
-          <Text style={{ fontSize: 18, fontFamily: "monospace", width: "80%" }}>
+          <Text style={{ fontSize: 18, fontFamily: "monospace" }}>
             {userEmail}
           </Text>
         </View>

@@ -87,6 +87,7 @@ export const AuthProvider = ({ children }) => {
       await saveToStorage("userInfo", response.data);
       await saveToStorage("userToken", token);
       await saveToStorage("userId", user.id);
+      await saveToStorage("userRole", user.role);
 
       return response.data; // Return successful admin login data
     } catch (error) {
@@ -147,7 +148,6 @@ export const AuthProvider = ({ children }) => {
     if (userInfo && userToken) {
       setUserInfo(userInfo);
       setUserToken(userToken);
-      setUserID(userInfo.user.id);
     }
     setIsLoading(false);
   };
@@ -159,10 +159,6 @@ export const AuthProvider = ({ children }) => {
   // Profile Edit Modal Toggle
   const ShowEditPage = () => setMainModal(true);
   const HideEditPage = () => setMainModal(false);
-
-  // Delete Confirmation Modal Toggle
-  const ShowDeleteModal = () => setdeleteModal(true);
-  const HideDeleteModal = () => setdeleteModal(false);
 
   // Image Picker Logic
   const uploadImage = async (mode) => {
@@ -236,14 +232,6 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Error uploading image to Cloudinary");
       }
     } catch (error) {
-      // Alert.alert(error);
-      Alert.alert(
-        "Failed!",
-        error.message +
-          "                                             " +
-          "                                             " +
-          "Please check you internet connection and try again"
-      );
       console.error("Cloudinary upload failed:", error);
     }
   };
@@ -251,7 +239,6 @@ export const AuthProvider = ({ children }) => {
   // Save image URL to AsyncStorage and update backend
   const saveImageToStorage = async (imageUrl) => {
     try {
-      await saveToStorage("userImage", imageUrl);
       await updateProfilePicture(imageUrl);
     } catch (error) {
       Alert.alert(
@@ -274,12 +261,15 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (response.status === 200) {
-        setUserInfo(response.data);
-        setUserToken(response.data.verificationToken);
-        setUserID(response.data.user._id);
-        await saveToStorage("userInfo", response.data);
-        await saveToStorage("userToken", response.data.verificationToken);
-        await saveToStorage("userId", response.data.user._id);
+        let profile = response.data;
+        let Id = response.data.user._id;
+        console.log(Id);
+
+        setUserInfo(profile);
+
+        setUserID(Id);
+        await saveToStorage("userInfo", profile);
+        await saveToStorage("userId", Id);
         setSelectedImage(profilePictureUrl);
       }
     } catch (error) {
@@ -298,12 +288,9 @@ export const AuthProvider = ({ children }) => {
 
       if (response.status === 200) {
         setSelectedImage(null);
-        await AsyncStorage.removeItem("userImage");
         setUserInfo(response.data);
-        setUserToken(response.data.verificationToken);
         setUserID(response.data.user._id);
         await saveToStorage("userInfo", response.data);
-        await saveToStorage("userToken", response.data.verificationToken);
         await saveToStorage("userId", response.data.user._id);
       }
     } catch (error) {
@@ -353,15 +340,24 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.delete(
         `https://uga-cycle-backend-1.onrender.com/deleteUser/${UserID}`,
-        { headers: { Authorization: `Bearer ${UserToken}` } }
+        {
+          headers: { Authorization: `Bearer ${UserToken}` },
+        }
       );
 
       if (response.status === 200) {
-        logout();
+        // Clear local storage and reset state on successful deletion
         Alert.alert("Success", "Account deleted successfully.");
+        await logout();
+      } else {
+        Alert.alert("Error", "Failed to delete account.");
       }
     } catch (error) {
-      console.log("Error deleting user account:", error);
+      console.error("Error deleting user account:", error);
+      Alert.alert(
+        "Failed!",
+        error.message + "Please check your internet connection and try again"
+      );
     }
   };
 
@@ -382,8 +378,7 @@ export const AuthProvider = ({ children }) => {
         setSelectedImage,
         uploadImage,
         removeImage,
-        ShowDeleteModal,
-        HideDeleteModal,
+
         deleteModal,
         deleteUserAccount,
         UserID,

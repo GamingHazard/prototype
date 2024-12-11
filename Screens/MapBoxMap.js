@@ -94,7 +94,7 @@ const MapboxMap = () => {
               longitude: service.location.longitude,
             }}
             title={service.fullName}
-            description={service.serviceType}
+            description={`District--- ${service.district}`}
           />
         ))}
       </MapView>

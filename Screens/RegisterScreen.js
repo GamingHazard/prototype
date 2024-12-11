@@ -198,7 +198,23 @@ const RegisterScreen = ({ navigation }) => {
           onPress={handleSubmit}
         >
           {loading ? (
-            <ActivityIndicator size="small" color="#ffffff" />
+            <View
+              style={{
+                height: 50,
+                borderRadius: 20,
+                backgroundColor: "#3b6d3b",
+                marginVertical: 10,
+                padding: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              <Text style={{ flex: 1, color: "white" }}>
+                Creating Account...
+              </Text>
+              <ActivityIndicator size="small" color="#ffffff" />
+            </View>
           ) : (
             <Text style={{ color: "#fbfbda", fontSize: 16 }}>
               Create account
@@ -231,84 +247,7 @@ const RegisterScreen = ({ navigation }) => {
             justifyContent: "space-evenly",
             alignItems: "center",
           }}
-        >
-          {/* <View
-            style={{
-              height: 0.5,
-              width: 80,
-              borderWidth: 0.5,
-              borderColor: "#3b6d3b",
-              marginRight: 10,
-            }}
-          /> */}
-          {/* <Text style={{ marginVertical: 15, color: "grey", fontSize: 16 }}>
-            Or Continue with
-          </Text>
-          <View
-            style={{
-              height: 0.5,
-              width: 80,
-              borderWidth: 0.5,
-              borderColor: "#3b6d3b",
-              marginLeft: 10,
-            }}
-          /> */}
-        </View>
-        {/* Google & Apple Buttons */}
-        {/* <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            width: "100%",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              width: "45%",
-              height: 50,
-              borderRadius: 10,
-              backgroundColor: "whitesmoke",
-              flexDirection: "row",
-              marginVertical: 10,
-              padding: 10,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AntDesign
-              style={{ marginRight: 10 }}
-              name="apple1"
-              size={24}
-              color="black"
-            />
-            <Text style={{ alignSelf: "center", flex: 1, fontSize: 18 }}>
-              Apple
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: "45%",
-              height: 50,
-              borderRadius: 10,
-              backgroundColor: "whitesmoke",
-              flexDirection: "row",
-              marginVertical: 10,
-              padding: 10,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AntDesign
-              style={{ marginRight: 10 }}
-              name="google"
-              size={24}
-              color="black"
-            />
-            <Text style={{ alignSelf: "center", flex: 1, fontSize: 18 }}>
-              Google
-            </Text>
-          </TouchableOpacity>
-        </View> */}
+        />
       </View>
       <View
         style={{
