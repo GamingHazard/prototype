@@ -336,28 +336,33 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Delete User Account
-  const deleteUserAccount = async () => {
+  const deleteUserAccount = async (password) => {
+    const delete_password = { password };
     try {
-      const response = await axios.delete(
-        `https://uga-cycle-backend-1.onrender.com/deleteUser/${UserID}`,
-        {
-          headers: { Authorization: `Bearer ${UserToken}` },
-        }
+      const password_response = await axios.post(
+        `https://uga-cycle-backend-1.onrender.com/user-password/${UserID}`,
+        delete_password
       );
 
-      if (response.status === 200) {
-        // Clear local storage and reset state on successful deletion
-        Alert.alert("Success", "Account deleted successfully.");
-        await logout();
-      } else {
-        Alert.alert("Error", "Failed to delete account.");
+      if (password_response.status === 200) {
+        const response = await axios.delete(
+          `https://uga-cycle-backend-1.onrender.com/deleteUser/${UserID}`,
+          {
+            headers: { Authorization: `Bearer ${UserToken}` },
+          }
+        );
+
+        if (response.status === 200) {
+          // Clear local storage and reset state on successful deletion
+          Alert.alert("Success", "Account deleted successfully.");
+          await logout();
+        } else {
+          Alert.alert("Error", "Failed to delete account.");
+        }
       }
     } catch (error) {
       console.error("Error deleting user account:", error);
-      Alert.alert(
-        "Failed!",
-        error.message + "Please check your internet connection and try again"
-      );
+      Alert.alert("Failed!", "Check your password and try again");
     }
   };
 

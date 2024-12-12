@@ -20,18 +20,21 @@ const ForgotPasswordScreen = ({ navigation }) => {
     try {
       // Make the POST request
       const response = await axios.post(
-        "https://uga-cycle-backend-1.onrender.com/forgot-password",
+        "https://uga-cycle-backend-1.onrender.com/reset-password-request",
         {
           identifier, // Sending either email or phone number
         }
       );
 
-      const { token } = response.data;
+      const token = response.data.user.token;
+      const id = response.data.user.id;
+      const name = response.data.user.name;
+      console.log(response.data.user.id);
 
       // Check if token is received
       if (token) {
         // Navigate to the ResetPasswordScreen with the token
-        navigation.navigate("ResetPassword", { token });
+        navigation.navigate("ResetPassword", { id, name });
         setIdentifier("");
       } else {
         // Display an error message if token is not received
@@ -67,7 +70,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         {loading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Send Reset Link</Text>
+          <Text style={styles.buttonText}>send request</Text>
         )}
       </TouchableOpacity>
     </View>

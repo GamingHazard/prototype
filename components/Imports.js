@@ -12,8 +12,10 @@ import SecurityScreen from "../Screens/SecurityScreen";
 import ReportScreen from "../Screens/ReportScreen";
 import SupportScreen from "../Screens/SupportScreen";
 import CommunityScreen from "../Screens/CommunityScreen";
-
 import Swift from "../Screens/SevicesProviders/Swift";
+import Tips from "../Screens/TipsScreen";
+import SaleScreen from "../Screens/SaleScreen";
+import TrashReminder from "../Screens/GarbageScheduleScreen";
 
 export {
   WelcomeScreen,
@@ -30,15 +32,7 @@ export {
   ReportScreen,
   SupportScreen,
   CommunityScreen,
-  Aquila,
-  Armstrong,
-  Asante,
-  Best,
-  Bins,
-  DeWaste,
-  Nabugabo,
   Swift,
-  YoWaste,
   SaleScreen,
   TrashReminder,
   Tips,

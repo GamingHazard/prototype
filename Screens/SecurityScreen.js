@@ -12,42 +12,58 @@ import { AuthContext } from "../context/AuthContext"; // Make sure to import Aut
 import axios from "axios"; // Don't forget to import axios if you haven't already
 
 const SecurityScreen = () => {
-  const { ShowDeleteModal, HideDeleteModal, deleteUserAccount } =
-    useContext(AuthContext);
+  const { deleteUserAccount, UserID } = useContext(AuthContext);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [Newpassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [deletePassword, setDeletePassword] = useState(""); // New state for delete password
-  const [error, setError] = useState("");
+
   const [loading, setLoading] = useState(false);
 
-  const handleChangePassword = async () => {
-    if (!newPassword || !confirmPassword) {
-      return Alert.alert("Error", "Please fill in all password fields.");
-    }
-
-    if (newPassword !== confirmPassword) {
-      return Alert.alert("Error", "New passwords do not match.");
-    }
-
+  const updatePassword = async () => {
     setLoading(true);
+    let currentPassword = oldPassword;
+    let newPassword = Newpassword;
+    let id = UserID;
     try {
+      if (!currentPassword || !newPassword) {
+        Alert.alert("Error", "Both current and new passwords are required.");
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.patch(
-        `https://your-backend-url/reset-password/${resetToken || ""}`, // Attach resetToken if available
-        { password: newPassword, userToken } // Send userToken if logged in
+        `https://uga-cycle-backend-1.onrender.com/change-password/${id}`,
+        {
+          currentPassword,
+          newPassword,
+        }
       );
+
       Alert.alert("Success", response.data.message);
-      // navigation.navigate("Login");
+      setOldPassword("");
+      setConfirmPassword("");
+      setNewPassword("");
     } catch (error) {
-      Alert.alert("Error", error.response?.data?.message || "Server error");
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to update password."
+      );
     } finally {
       setLoading(false);
     }
   };
+
   const deleteAccount = async () => {
     setLoadingDelete(true);
-    await deleteUserAccount();
+    if (!password) {
+      Alert.alert("Error", "Password is required to delete the account.");
+      return;
+    } else {
+      await deleteUserAccount(password);
+    }
+
     setLoadingDelete(false);
   };
 
@@ -85,9 +101,6 @@ const SecurityScreen = () => {
           >
             Change password
           </Text>
-          {error ? (
-            <Text style={{ color: "red", marginVertical: 5 }}>{error}</Text>
-          ) : null}
           <View style={styles.inputContainer}>
             <TextInput
               placeholder="Enter old password"
@@ -99,25 +112,44 @@ const SecurityScreen = () => {
           <View style={styles.inputContainer}>
             <TextInput
               placeholder="Enter new password"
-              value={newPassword}
-              onChangeText={setNewPassword}
-              secureTextEntry
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Confirm new password"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
             />
           </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Confirm new password"
+              value={Newpassword}
+              onChangeText={setNewPassword}
+              secureTextEntry
+              style={{
+                color: Newpassword === confirmPassword ? "black" : "crimson",
+              }}
+            />
+          </View>
+          <Text style={{ color: "crimson", marginBottom: 10 }}>
+            {confirmPassword === Newpassword ? "" : "passwords don't match"}
+          </Text>
+
           <TouchableOpacity
-            style={styles.button}
-            onPress={handleChangePassword}
+            style={[
+              styles.button,
+              {
+                backgroundColor: oldPassword ? "teal" : "grey",
+                opacity: oldPassword ? 1 : 0.6,
+              },
+              ,
+            ]}
+            onPress={updatePassword}
+            disabled={!oldPassword} // Disable the button if password is empty
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <View style={{ width: "100%", flexDirection: "row" }}>
+                <Text style={{ color: "white", flex: 1 }}>Changing...</Text>
+                <ActivityIndicator color="#fff" />
+              </View>
             ) : (
               <Text style={{ color: "white" }}>Change</Text>
             )}
@@ -137,11 +169,22 @@ const SecurityScreen = () => {
               Delete Account
             </Text>
             <TouchableOpacity
-              style={[styles.button, { backgroundColor: "crimson" }]}
+              style={[
+                styles.button,
+                {
+                  backgroundColor: password ? "crimson" : "grey",
+                  opacity: password ? 1 : 0.6,
+                },
+                ,
+              ]}
               onPress={deleteAccount}
+              disabled={!password} // Disable the button if password is empty
             >
               {loadingDelete ? (
-                <ActivityIndicator color="#fff" />
+                <View style={{ width: "100%", flexDirection: "row" }}>
+                  <Text style={{ color: "white", flex: 1 }}>Delete...</Text>
+                  <ActivityIndicator color="#fff" />
+                </View>
               ) : (
                 <Text style={{ color: "white" }}>Delete Account</Text>
               )}
@@ -151,8 +194,6 @@ const SecurityScreen = () => {
           <View
             style={{
               width: "100%",
-              // flexDirection: "row",
-              // alignItems: "center",
               backgroundColor: "whitesmoke",
               padding: 10,
               borderRadius: 10,
@@ -163,6 +204,23 @@ const SecurityScreen = () => {
             <Text style={{ color: "red" }}>
               This proceedure cannot be undone, please continue with caution!
             </Text>
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "white",
+                padding: 15,
+                marginVertical: 10,
+                borderRadius: 15,
+                elevation: 10,
+              }}
+            >
+              <TextInput
+                placeholder="Enter password to confirm"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -185,7 +243,6 @@ const styles = StyleSheet.create({
     width: "40%",
     padding: 10,
     borderRadius: 15,
-    backgroundColor: "teal",
     justifyContent: "center",
     alignItems: "center",
   },

@@ -99,7 +99,7 @@ const RegisterScreen = ({ navigation }) => {
           <TextInput
             style={{ width: "100%", marginLeft: 10, fontSize: 16 }}
             placeholderTextColor={"#3b6d3b"}
-            placeholder="Username"
+            placeholder="Names"
             onChangeText={setName}
             value={name}
           />

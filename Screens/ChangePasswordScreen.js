@@ -13,34 +13,46 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const ResetPasswordScreen = ({ route, navigation }) => {
   const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [Newpassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  const { token } = route.params || {};
+  const { id, name } = route.params || {};
 
-  const handleResetPassword = async () => {
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
-      return;
-    }
-
+  const updatePassword = async () => {
     setLoading(true);
-
+    let currentPassword = oldPassword;
+    let newPassword = Newpassword;
+    let ID = id;
     try {
+      if (!currentPassword || !newPassword) {
+        Alert.alert("Error", "Both current and new passwords are required.");
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.patch(
-        ` https://uga-cycle-backend-1.onrender.com/reset-password/${token}`,
-        { password }
+        `https://uga-cycle-backend-1.onrender.com/change-password/${ID}`,
+        {
+          currentPassword,
+          newPassword,
+        }
       );
 
-      if (response.status === 200) {
-        Alert.alert("Success", "Password has been updated successfully");
-        navigation.navigate("Login");
-      }
+      Alert.alert("Success", response.data.message);
+      setOldPassword("");
+      setConfirmPassword("");
+      setNewPassword("");
+      navigation.navigate("Login");
     } catch (error) {
-      console.error("Error resetting password", error);
-      Alert.alert("Error", "Failed to reset password. Please try again.");
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to update password."
+      );
     } finally {
       setLoading(false);
     }
@@ -56,60 +68,80 @@ const ResetPasswordScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {token ? <Text>Token: {token}</Text> : <Text>No Token Provided</Text>}
+      <Text>user: {id}</Text>
       <Text style={styles.title}>Reset Password</Text>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="New Password"
-          secureTextEntry={!passwordVisible}
-          value={password}
-          onChangeText={handlePasswordChange} // Use the handler
-        />
-        <TouchableOpacity
-          style={styles.icon}
-          onPress={() => setPasswordVisible(!passwordVisible)}
-        >
-          <Icon
-            name={passwordVisible ? "eye" : "eye-slash"}
-            size={20}
-            color="#aaa"
-          />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm New Password"
-          secureTextEntry={!confirmPasswordVisible}
-          value={confirmPassword}
-          onChangeText={handleConfirmPasswordChange} // Use the handler
-        />
-        <TouchableOpacity
-          style={styles.icon}
-          onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-        >
-          <Icon
-            name={confirmPasswordVisible ? "eye" : "eye-slash"}
-            size={20}
-            color="#aaa"
-          />
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleResetPassword}
-        disabled={loading}
+      <View
+        style={{
+          width: "100%",
+          padding: 15,
+          borderRadius: 10,
+          backgroundColor: "white",
+          alignItems: "center",
+        }}
       >
-        {loading ? (
-          <ActivityIndicator size="small" color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Reset Password</Text>
-        )}
-      </TouchableOpacity>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+            alignSelf: "flex-start",
+          }}
+        >
+          Change password
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Enter old password"
+            value={oldPassword}
+            onChangeText={setOldPassword}
+            secureTextEntry
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Enter new password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Confirm new password"
+            value={Newpassword}
+            onChangeText={setNewPassword}
+            secureTextEntry
+            style={{
+              color: Newpassword === confirmPassword ? "black" : "crimson",
+            }}
+          />
+        </View>
+        <Text style={{ color: "crimson", marginBottom: 10 }}>
+          {confirmPassword === Newpassword ? "" : "passwords don't match"}
+        </Text>
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              backgroundColor: oldPassword ? "teal" : "grey",
+              opacity: oldPassword ? 1 : 0.6,
+            },
+            ,
+          ]}
+          onPress={updatePassword}
+          disabled={!oldPassword} // Disable the button if password is empty
+        >
+          {loading ? (
+            <View style={{ width: "100%", flexDirection: "row" }}>
+              <Text style={{ color: "white", flex: 1 }}>Changing...</Text>
+              <ActivityIndicator color="#fff" />
+            </View>
+          ) : (
+            <Text style={{ color: "white" }}>Change</Text>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -129,36 +161,25 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
-    position: "relative",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
+    backgroundColor: "whitesmoke",
     padding: 15,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: "#fff",
-  },
-  icon: {
-    position: "absolute",
-    right: 10,
-    top: "50%",
-    transform: [{ translateY: -10 }],
+    marginVertical: 10,
+    borderRadius: 15,
   },
   button: {
-    backgroundColor: "#007bff",
-    padding: 15,
-    borderRadius: 8,
-    width: "100%",
-    alignItems: "center",
-    flexDirection: "row",
+    width: "40%",
+    padding: 10,
+    borderRadius: 15,
     justifyContent: "center",
+    alignItems: "center",
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  deleteAccountContainer: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "white",
+    alignItems: "center",
+    marginTop: 20,
   },
 });
 

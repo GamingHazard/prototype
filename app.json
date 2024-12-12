@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon3.png",
       "resizeMode": "contain",
       "backgroundColor": "#3b6d3b"
     },
@@ -22,10 +22,7 @@
         "foregroundImage": "./assets/foreground.png",
         "backgroundColor": "#3b6d3b"
       },
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
-      ],
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
       "package": "com.gost150.ugacycle"
     },
     "web": {
