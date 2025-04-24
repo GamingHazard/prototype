@@ -50,7 +50,7 @@ News Feed Area: ![News Feed](https://github.com/GamingHazard/prototype/blob/main
 Users can interact, share tips, report illegal dumping, or start discussions in a built-in community forum.
 
 **📸 Screenshot:**  
-![Community Forum](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115037_Uga-Cycle.jpg)
+![Community Forum](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115235_Uga-Cycle.jpg)
 
 ---
 
