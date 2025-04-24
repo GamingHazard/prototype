@@ -18,15 +18,6 @@ user Login: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/
 
 ---
 
-### 🛠️ 2. Edit Profile
-
-Edit and manage your personal info with a user-friendly interface.
-
-**📸 Screenshot:**  
-![Edit Profile](screenshots/edit-profile.png)
-
----
-
 ### 🛍️ 3. Waste Market
 
 An in-app marketplace where users can buy and sell **reusable or upcycled waste materials** — promoting eco-friendly living and circular economy.
@@ -75,7 +66,7 @@ Users can access a dedicated **Settings** page where they can:
 This makes the app experience more personalized and accessible.
 
 **📸 Screenshot:**  
-![Settings Screen](screenshots/settings.png)
+Setting page: ![Settings Screen](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-121913_Uga-Cycle.jpg)
 
 ---
 
