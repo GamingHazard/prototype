@@ -58,7 +58,7 @@ Stay informed with a feed of the latest news related to waste management, climat
 Users can interact, share tips, report illegal dumping, or start discussions in a built-in community forum.
 
 **📸 Screenshot:**  
-![Community Forum](screenshots/community.png)
+![Community Forum](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115037_Uga-Cycle.jpg)
 
 ---
 
