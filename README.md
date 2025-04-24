@@ -50,7 +50,7 @@ Set reminders to take your trash out! This feature allows users to select specif
 Stay informed with a feed of the latest news related to waste management, climate, recycling, and more.
 
 **📸 Screenshot:**  
-![News Feed](screenshots/news-feed.png)
+News Feed Area: ![News Feed](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115322_Uga-Cycle.jpg)
 
 ---
 
