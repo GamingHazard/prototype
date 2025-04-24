@@ -15,6 +15,7 @@ Users can create accounts, build personalized profiles, and edit their details l
 **📸 Screenshot:**  
 user resgistration: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115047_Uga-Cycle.jpg)
 user Login: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115052_Uga-Cycle.jpg)
+Logo: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/assets/logo.png)
 
 ---
 
