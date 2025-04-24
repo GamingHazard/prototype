@@ -13,7 +13,8 @@ The app also includes user-friendly **settings** that allow individuals to custo
 Users can create accounts, build personalized profiles, and edit their details like name, photo, and location.
 
 **📸 Screenshot:**  
-user resgistratio: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115047_Uga-Cycle.jpg)
+user resgistration: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115047_Uga-Cycle.jpg)
+user Login: ![User Profile](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-115052_Uga-Cycle.jpg)
 
 ---
 
