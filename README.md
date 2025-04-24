@@ -1,0 +1,92 @@
+# ♻️ WasteWise Mobile App
+
+**WasteWise** is a modern mobile application built with **React Native** that empowers communities to manage waste better. From scheduling garbage pickups to buying reusable waste and connecting with neighbors, this app makes environmental responsibility easy and social.
+
+The app also includes user-friendly **settings** that allow individuals to customize their experience — from notification preferences to theme settings.
+
+---
+
+## 📱 Features
+
+### 👤 1. User Registration & Profile Management
+
+Users can create accounts, build personalized profiles, and edit their details like name, photo, and location.
+
+**📸 Screenshot:**  
+![User Profile](screenshots/user-profile.png)
+
+---
+
+### 🛠️ 2. Edit Profile
+
+Edit and manage your personal info with a user-friendly interface.
+
+**📸 Screenshot:**  
+![Edit Profile](screenshots/edit-profile.png)
+
+---
+
+### 🛍️ 3. Waste Market
+
+An in-app marketplace where users can buy and sell **reusable or upcycled waste materials** — promoting eco-friendly living and circular economy.
+
+**📸 Screenshot:**  
+![Waste Market](screenshots/waste-market.png)
+
+---
+
+### ⏰ 4. Garbage Collection Scheduler
+
+Set reminders to take your trash out! This feature allows users to select specific days and get push notifications before collection time.
+
+**📸 Screenshot:**  
+![Garbage Reminder](screenshots/scheduler.png)
+
+---
+
+### 📰 5. News Feed
+
+Stay informed with a feed of the latest news related to waste management, climate, recycling, and more.
+
+**📸 Screenshot:**  
+![News Feed](screenshots/news-feed.png)
+
+---
+
+### 🧑‍🤝‍🧑 6. Community Interaction
+
+Users can interact, share tips, report illegal dumping, or start discussions in a built-in community forum.
+
+**📸 Screenshot:**  
+![Community Forum](screenshots/community.png)
+
+---
+
+### ⚙️ 7. Settings & Customization
+
+Users can access a dedicated **Settings** page where they can:
+- Toggle push notifications
+- Choose light or dark mode
+- Set language preferences
+- Adjust reminder times
+- Manage data usage options
+
+This makes the app experience more personalized and accessible.
+
+**📸 Screenshot:**  
+![Settings Screen](screenshots/settings.png)
+
+---
+
+## 🛠 Built With
+
+- **React Native + Expo**
+- **Firebase / Supabase** (Authentication + Realtime DB)
+- **React Navigation**
+- **Push Notifications (Expo or Firebase)**
+- **Cloud Storage for image uploads**
+
+---
+
+## 🗂 Folder Structure
+
