@@ -32,7 +32,7 @@ Edit and manage your personal info with a user-friendly interface.
 An in-app marketplace where users can buy and sell **reusable or upcycled waste materials** — promoting eco-friendly living and circular economy.
 
 **📸 Screenshot:**  
-![Waste Market](screenshots/waste-market.png)
+![Waste Market](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-121437_Uga-Cycle.jpg)
 
 ---
 
