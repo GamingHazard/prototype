@@ -32,7 +32,7 @@ An in-app marketplace where users can buy and sell **reusable or upcycled waste 
 Set reminders to take your trash out! This feature allows users to select specific days and get push notifications before collection time.
 
 **📸 Screenshot:**  
-![Garbage Reminder](screenshots/scheduler.png)
+![Garbage Reminder](https://github.com/GamingHazard/prototype/blob/main/assets/Screenshot_20250424-121437_Uga-Cycle.jpg)
 
 ---
 
